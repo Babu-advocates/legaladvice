@@ -326,7 +326,7 @@ const ReportPreview = ({
                 <tr>
                   <td style={cellStyle}>v</td>
                   <td style={{ ...cellStyle, fontWeight: 'bold' }}>Location like name of the place, village, city, registration, sub-district etc.</td>
-                  <td style={{ ...cellStyle, textAlign: 'justify' }}>{doc.location || '(Location like name of the place, village, city registration, sub-district etc.)'}</td>
+                  <td style={{ ...cellStyle, textAlign: 'justify', textJustify: 'inter-word' as any }}>{doc.location || '(Location like name of the place, village, city registration, sub-district etc.)'}</td>
                 </tr>
                 <tr>
                   <td style={cellStyle}>vi</td>
