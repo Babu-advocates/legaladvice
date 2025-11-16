@@ -76,14 +76,14 @@ const Drafts = () => {
       // Get current user info
       const username = localStorage.getItem("username") || "Unknown User";
 
-      // Create an approval request instead of deleting directly
+      // Create an approval request for draft deletion
       const { error } = await supabase
         .from("approval_requests")
         .insert({
           request_type: "delete_draft",
-          template_id: draftId, // Using template_id to store draft_id
+          draft_id: draftId,
           template_name: draftName,
-          file_name: draftName, // Using file_name to store draft name
+          file_name: draftName,
           requested_by: username,
           status: "pending"
         });

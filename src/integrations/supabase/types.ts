@@ -41,38 +41,48 @@ export type Database = {
       approval_requests: {
         Row: {
           created_at: string | null
+          draft_id: string | null
           file_name: string
           id: string
           request_type: string
           requested_by: string | null
           status: string | null
-          template_id: string
+          template_id: string | null
           template_name: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
+          draft_id?: string | null
           file_name: string
           id?: string
           request_type: string
           requested_by?: string | null
           status?: string | null
-          template_id: string
+          template_id?: string | null
           template_name: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
+          draft_id?: string | null
           file_name?: string
           id?: string
           request_type?: string
           requested_by?: string | null
           status?: string | null
-          template_id?: string
+          template_id?: string | null
           template_name?: string
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "approval_requests_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "drafts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "approval_requests_template_id_fkey"
             columns: ["template_id"]
