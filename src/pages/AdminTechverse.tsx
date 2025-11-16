@@ -351,6 +351,16 @@ const AdminTechverse = () => {
         if (deleteError) throw deleteError;
         
         toast.success("Template deleted successfully");
+      } else if (request.request_type === "delete_draft") {
+        // Delete the draft
+        const { error: deleteError } = await supabase
+          .from("drafts")
+          .delete()
+          .eq("id", (request as any).draft_id);
+
+        if (deleteError) throw deleteError;
+        
+        toast.success("Draft deleted successfully");
       } else if (request.request_type === "download") {
         // For download, fetch and download the file
         const { data: template, error: fetchError } = await supabase
