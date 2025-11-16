@@ -68,23 +68,32 @@ const Drafts = () => {
   };
 
   const handleDeleteDraft = async (draftId: string, draftName: string) => {
-    if (!confirm(`Are you sure you want to delete "${draftName}"?`)) {
+    if (!confirm(`Are you sure you want to request deletion of "${draftName}"?`)) {
       return;
     }
 
     try {
+      // Get current user info
+      const username = localStorage.getItem("username") || "Unknown User";
+
+      // Create an approval request instead of deleting directly
       const { error } = await supabase
-        .from("drafts")
-        .delete()
-        .eq("id", draftId);
+        .from("approval_requests")
+        .insert({
+          request_type: "delete_draft",
+          template_id: draftId, // Using template_id to store draft_id
+          template_name: draftName,
+          file_name: draftName, // Using file_name to store draft name
+          requested_by: username,
+          status: "pending"
+        });
 
       if (error) throw error;
 
-      toast.success("Draft deleted successfully");
-      loadDrafts();
+      toast.success("Deletion request sent to admin for approval");
     } catch (error) {
-      console.error("Error deleting draft:", error);
-      toast.error("Failed to delete draft");
+      console.error("Error creating approval request:", error);
+      toast.error("Failed to send approval request");
     }
   };
 
