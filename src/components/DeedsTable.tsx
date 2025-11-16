@@ -218,21 +218,33 @@ const DeedsTable = ({ sectionTitle = "Description of Documents Scrutinized", tab
     };
   };
 
-  const handleAddDeed = async () => {
-    const newDeed = {
-      deed_type: "",
-      executed_by: "",
-      in_favour_of: "",
-      date: new Date().toISOString().split("T")[0],
-      document_number: "",
-      nature_of_doc: "",
-      table_type: tableType,
-      user_id: null,
-      custom_fields: {
-        extent: "",
-        surveyNo: ""
-      }
-    };
+  const handleAddDeed = async (deedToDuplicate?: Deed) => {
+    const newDeed = deedToDuplicate 
+      ? {
+          deed_type: deedToDuplicate.deed_type,
+          executed_by: deedToDuplicate.executed_by,
+          in_favour_of: deedToDuplicate.in_favour_of,
+          date: new Date().toISOString().split("T")[0],
+          document_number: "",
+          nature_of_doc: deedToDuplicate.nature_of_doc,
+          table_type: tableType,
+          user_id: null,
+          custom_fields: { ...(deedToDuplicate.custom_fields || {}) }
+        }
+      : {
+          deed_type: "",
+          executed_by: "",
+          in_favour_of: "",
+          date: new Date().toISOString().split("T")[0],
+          document_number: "",
+          nature_of_doc: "",
+          table_type: tableType,
+          user_id: null,
+          custom_fields: {
+            extent: "",
+            surveyNo: ""
+          }
+        };
 
     const { error } = await supabase.from("deeds").insert(newDeed);
 
@@ -240,7 +252,7 @@ const DeedsTable = ({ sectionTitle = "Description of Documents Scrutinized", tab
       console.error("Error adding deed:", error);
       toast.error(`Failed to add deed: ${error.message}`);
     } else {
-      toast.success("Deed added");
+      toast.success(deedToDuplicate ? "Deed duplicated successfully" : "Deed added");
     }
   };
   const handleRemoveDeed = async (id: string) => {
@@ -563,14 +575,26 @@ const DeedsTable = ({ sectionTitle = "Description of Documents Scrutinized", tab
                       </Select>
                     </td>
                     <td className="p-3 text-center">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveDeed(deed.id)}
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-2 justify-center">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleAddDeed(deed)}
+                          className="text-primary hover:text-primary hover:bg-primary/10"
+                          title="Duplicate this row"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveDeed(deed.id)}
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          title="Delete this row"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -579,7 +603,7 @@ const DeedsTable = ({ sectionTitle = "Description of Documents Scrutinized", tab
           </div>
         )}
         <Button
-          onClick={handleAddDeed}
+          onClick={() => handleAddDeed()}
           className="w-full bg-primary hover:bg-primary/90 shadow-md transition-all duration-200 hover:shadow-lg"
         >
           <Plus className="mr-2 h-4 w-4" />
